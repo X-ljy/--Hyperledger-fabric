@@ -1,0 +1,126 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+services:
+
+  orderer0.blockchain.com:
+    container_name: orderer0.blockchain.com
+    extends:
+      file: orderer-base.yaml
+      service: orderer-base
+    volumes:
+      - ../crypto-config/ordererOrganizations/blockchain.com/orderers/orderer0.blockchain.com/msp:/var/hyperledger/orderer/msp
+      - ../crypto-config/ordererOrganizations/blockchain.com/orderers/orderer0.blockchain.com/tls:/var/hyperledger/orderer/tls
+
+  orderer1.blockchain.com:
+    container_name: orderer1.blockchain.com
+    extends:
+      file: orderer-base.yaml
+      service: orderer-base
+    volumes:
+      - ../crypto-config/ordererOrganizations/blockchain.com/orderers/orderer1.blockchain.com/msp:/var/hyperledger/orderer/msp
+      - ../crypto-config/ordererOrganizations/blockchain.com/orderers/orderer1.blockchain.com/tls:/var/hyperledger/orderer/tls
+
+  orderer2.blockchain.com:
+    container_name: orderer2.blockchain.com
+    extends:
+      file: orderer-base.yaml
+      service: orderer-base
+    volumes:
+      - ../crypto-config/ordererOrganizations/blockchain.com/orderers/orderer2.blockchain.com/msp:/var/hyperledger/orderer/msp
+      - ../crypto-config/ordererOrganizations/blockchain.com/orderers/orderer2.blockchain.com/tls:/var/hyperledger/orderer/tls
+
+
+  peer0.org1.blockchain.com:
+    container_name: peer0.org1.blockchain.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org1.blockchain.com
+      - CORE_PEER_ADDRESS=peer0.org1.blockchain.com:7051
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.blockchain.com:7051
+      - CORE_PEER_LOCALMSPID=Org1MSP
+    volumes:
+        - /var/run/:/host/var/run/
+        # 数据固化，将peer的数据映射到本地，防止丢失
+        - ../chainData/peer/peer0org1:/var/hyperledger/production/
+        - ../crypto-config/peerOrganizations/org1.blockchain.com/peers/peer0.org1.blockchain.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/org1.blockchain.com/peers/peer0.org1.blockchain.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 7051:7051
+      - 7052:7052
+      - 7053:7053
+
+  peer1.org1.blockchain.com:
+    container_name: peer1.org1.blockchain.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.org1.blockchain.com
+      - CORE_PEER_ADDRESS=peer1.org1.blockchain.com:7051
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org1.blockchain.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.blockchain.com:7051
+      - CORE_PEER_LOCALMSPID=Org1MSP
+    volumes:
+        - /var/run/:/host/var/run/
+        # 数据固化，将peer的数据映射到本地，防止丢失
+        - ../chainData/peer/peer1org1:/var/hyperledger/production/
+        - ../crypto-config/peerOrganizations/org1.blockchain.com/peers/peer1.org1.blockchain.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/org1.blockchain.com/peers/peer1.org1.blockchain.com/tls:/etc/hyperledger/fabric/tls
+
+    ports:
+      - 7051:7051
+      - 7052:7052
+      - 7053:7053
+  peer0.org2.blockchain.com:
+    container_name: peer0.org2.blockchain.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org2.blockchain.com
+      - CORE_PEER_ADDRESS=peer0.org2.blockchain.com:7051
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.blockchain.com:7051
+      - CORE_PEER_LOCALMSPID=Org2MSP
+    volumes:
+        - /var/run/:/host/var/run/
+        # 数据固化，将peer的数据映射到本地，防止丢失
+        - ../chainData/peer/peer0org2:/var/hyperledger/production/
+        - ../crypto-config/peerOrganizations/org2.blockchain.com/peers/peer0.org2.blockchain.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/org2.blockchain.com/peers/peer0.org2.blockchain.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 7051:7051
+      - 7052:7052
+      - 7053:7053
+  peer1.org2.blockchain.com:
+    container_name: peer1.org2.blockchain.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.org2.blockchain.com
+      - CORE_PEER_ADDRESS=peer1.org2.blockchain.com:7051
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org2.blockchain.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.blockchain.com:7051
+      - CORE_PEER_LOCALMSPID=Org2MSP
+    volumes:
+        - /var/run/:/host/var/run/
+        # 数据固化，将peer的数据映射到本地，防止丢失
+        - ../chainData/peer/peer1org2:/var/hyperledger/production/
+        - ../crypto-config/peerOrganizations/org2.blockchain.com/peers/peer1.org2.blockchain.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/org2.blockchain.com/peers/peer1.org2.blockchain.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 7051:7051
+      - 7052:7052
+      - 7053:7053
+

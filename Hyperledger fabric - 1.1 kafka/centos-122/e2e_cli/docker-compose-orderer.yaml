@@ -1,0 +1,30 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+services:
+
+  orderer1.blockchain.com:
+    extends:
+      file:   base/docker-compose-base.yaml
+      service: orderer1.blockchain.com
+    container_name: orderer1.blockchain.com
+    volumes:
+      # 数据固化，将orderer的数据映射到本地
+      - ./chainData/orderer/orderer1.blockchain.com/:/var/hyperledger/production/
+      - ./crypto-config/ordererOrganizations/blockchain.com/orderers/orderer1.blockchain.com/msp:/var/hyperledger/orderer/msp
+      - ./crypto-config/ordererOrganizations/blockchain.com/orderers/orderer1.blockchain.com/tls:/var/hyperledger/orderer/tls
+    extra_hosts:
+      - "zookeeper0.blockchain.com:10.10.44.122"
+      - "zookeeper1.blockchain.com:10.10.44.123"
+      - "zookeeper2.blockchain.com:10.10.44.124"
+      - "kafka0.blockchain.com:10.10.44.122"
+      - "kafka1.blockchain.com:10.10.44.123"
+      - "kafka2.blockchain.com:10.10.44.124"
+      - "kafka3.blockchain.com:10.10.44.129"
+      - "orderer0.blockchain.com:10.10.44.120"
+      - "orderer1.blockchain.com:10.10.44.122"
+      - "orderer2.blockchain.com:10.10.44.123"
