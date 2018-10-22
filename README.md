@@ -8,7 +8,7 @@
   docker-compose:1.19.0<br/>
   Hyperledger fabric:1.1<br/>
   
-KAFKA:
+KAFKA:<br/>
 10.10.44.120    orderer0.blockchain.com<br/>
 
 10.10.44.122    orderer1.blockchain.com<br/>
